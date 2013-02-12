@@ -46,7 +46,7 @@
 namespace Graphics {
 
 struct VertexAttrib {
-	VertexAttrib(uint32_t idx, const char * name) : _enabled(false), _idx(idx), _name(name), _vbo(0), _size(0), _type(GL_FLOAT), _normalized(false), _stride(0), _offset(NULL) {}
+	VertexAttrib(uint32_t idx, const char *name) : _enabled(false), _idx(idx), _name(name), _vbo(0), _size(0), _type(GL_FLOAT), _normalized(false), _stride(0), _offset(NULL) {}
 	bool _enabled;
 	uint32_t _idx;
 	Common::String _name;
@@ -55,7 +55,7 @@ struct VertexAttrib {
 	GLenum _type;
 	bool _normalized;
 	GLsizei _stride;
-	const GLvoid * _offset;
+	const GLvoid *_offset;
 	float _const[4];
 };
 
@@ -68,60 +68,60 @@ public:
 
 	void use();
 
-	void setUniform(const char* uniform, const Math::Matrix4& m) {
+	void setUniform(const char *uniform, const Math::Matrix4 &m) {
 		GLint pos = getUniformLocation(uniform);
 		if (pos != -1)
 			glUniformMatrix4fv(pos, 1, GL_FALSE, m.getData());
 	}
 
-	void setUniform(const char* uniform, const Math::Matrix3& m) {
+	void setUniform(const char* uniform, const Math::Matrix3 &m) {
 		GLint pos = getUniformLocation(uniform);
 		if (pos != -1)
 			glUniformMatrix3fv(pos, 1, GL_FALSE, m.getData());
 	}
 
-	void setUniform(const char* uniform, const Math::Vector3d& v) {
+	void setUniform(const char *uniform, const Math::Vector3d &v) {
 		GLint pos = getUniformLocation(uniform);
 		if (pos != -1)
 			glUniform3fv(pos, 1, v.getData());
 	}
 
-	void setUniform(const char* uniform, const Math::Vector2d& v) {
+	void setUniform(const char *uniform, const Math::Vector2d &v) {
 		GLint pos = getUniformLocation(uniform);
 		if (pos != -1)
 			glUniform2fv(pos, 1, v.getData());
 	}
 
-	void setUniform(const char* uniform, bool b) {
+	void setUniform(const char *uniform, bool b) {
 		GLint pos = getUniformLocation(uniform);
 		if (pos != -1)
 			glUniform1i(pos, b);
 	}
 
-	GLint getUniformLocation(const char* uniform) {
+	GLint getUniformLocation(const char *uniform) {
 		return glGetUniformLocation(_shaderNo, uniform);
 	}
 
-	void enableVertexAttribute(const char* attrib, GLuint vbo, GLint size, GLenum type, GLboolean normalized, GLsizei stride, uint32_t offset);
-	void disableVertexAttribute(const char* attrib, int size, const float* data);
+	void enableVertexAttribute(const char *attrib, GLuint vbo, GLint size, GLenum type, GLboolean normalized, GLsizei stride, uint32_t offset);
+	void disableVertexAttribute(const char *attrib, int size, const float *data);
 	template <int r>
-	void disableVertexAttribute(const char* attrib, const Math::Matrix<r,1> & m) {
+	void disableVertexAttribute(const char *attrib, const Math::Matrix<r,1> &m) {
 		disableVertexAttribute(attrib, r, m.getData());
 	}
 	VertexAttrib & getAttributeAt(uint32_t idx);
-	VertexAttrib & getAttribute(const char* attrib);
+	VertexAttrib & getAttribute(const char *attrib);
 
 	static GLuint createBuffer(GLenum target, GLsizeiptr size, const GLvoid* data, GLenum usage = GL_STATIC_DRAW);
 
-	static Shader* fromFiles(const char* vertex, const char* fragment, const char** attributes);
-	static Shader* fromFiles(const char* shared, const char** attributes) {
+	static Shader* fromFiles(const char *vertex, const char *fragment, const char **attributes);
+	static Shader* fromFiles(const char *shared, const char **attributes) {
 		return fromFiles(shared, shared, attributes);
 	}
 
-	static Shader* fromStrings(const Common::String &name, const char* vertex, const char* fragment, const char** attributes);
+	static Shader* fromStrings(const Common::String &name, const char *vertex, const char *fragment, const char **attributes);
 
 private:
-	Shader(const Common::String &name, GLuint vertexShader, GLuint fragmentShader, const char** attributes);
+	Shader(const Common::String &name, GLuint vertexShader, GLuint fragmentShader, const char **attributes);
 	GLuint _shaderNo;
 	Common::String _name;
 

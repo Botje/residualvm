@@ -25,7 +25,7 @@
 
 namespace Graphics {
 
-static const GLchar* readFile(const Common::String& filename) {
+static const GLchar *readFile(const Common::String &filename) {
 	Common::File file;
 	file.open(Common::String("shaders/") + filename);
 	if (!file.isOpen())
@@ -46,10 +46,10 @@ static GLuint createDirectShader(const char *shaderSource, GLenum shaderType, co
 	glCompileShader(shader);
 
 	GLint status;
-	glGetShaderiv( shader, GL_COMPILE_STATUS, &status );
+	glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
 	if (status != GL_TRUE) {
 		char buffer[512];
-		glGetShaderInfoLog( shader, 512, NULL, buffer );
+		glGetShaderInfoLog(shader, 512, NULL, buffer);
 		error("Could not compile shader %s: %s", name.c_str(), buffer);
 	}
 
@@ -70,10 +70,10 @@ static GLuint createCompatShader(const char *shaderSource, GLenum shaderType, co
 	glCompileShader(shader);
 
 	GLint status;
-	glGetShaderiv( shader, GL_COMPILE_STATUS, &status );
+	glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
 	if (status != GL_TRUE) {
 		char buffer[512];
-		glGetShaderInfoLog( shader, 512, NULL, buffer );
+		glGetShaderInfoLog(shader, 512, NULL, buffer);
 		error("Could not compile shader %s: %s", name.c_str(), buffer);
 	}
 
@@ -91,7 +91,7 @@ static GLuint loadShaderFromFile(const char *base, const char *extension, GLenum
 	return shader;
 }
 
-Shader::Shader(const Common::String &name, GLuint vertexShader, GLuint fragmentShader, const char** attributes)
+Shader::Shader(const Common::String &name, GLuint vertexShader, GLuint fragmentShader, const char **attributes)
 	: _name(name) {
 	assert(attributes);
 	GLuint shaderProgram = glCreateProgram();
@@ -107,14 +107,14 @@ Shader::Shader(const Common::String &name, GLuint vertexShader, GLuint fragmentS
 	_shaderNo = shaderProgram;
 }
 
-Shader* Shader::fromStrings(const Common::String &name, const char* vertex, const char* fragment, const char** attributes) {
+Shader *Shader::fromStrings(const Common::String &name, const char *vertex, const char *fragment, const char **attributes) {
 	GLuint vertexShader = createDirectShader(vertex, GL_VERTEX_SHADER, name + ".vertex");
 	GLuint fragmentShader = createDirectShader(fragment, GL_FRAGMENT_SHADER, name + ".fragment");
 	return new Shader(name, vertexShader, fragmentShader, attributes);
 }
 
 
-Shader* Shader::fromFiles(const char *vertex, const char *fragment, const char** attributes) {
+Shader *Shader::fromFiles(const char *vertex, const char *fragment, const char **attributes) {
 	GLuint vertexShader = loadShaderFromFile(vertex, "vertex", GL_VERTEX_SHADER);
 	GLuint fragmentShader = loadShaderFromFile(fragment, "fragment", GL_FRAGMENT_SHADER);
 
@@ -125,7 +125,7 @@ Shader* Shader::fromFiles(const char *vertex, const char *fragment, const char**
 void Shader::use() {
 	glUseProgram(_shaderNo);
 	for (uint32_t i = 0; i < _attributes.size(); ++i) {
-		Graphics::VertexAttrib& attrib = _attributes[i];
+		Graphics::VertexAttrib &attrib = _attributes[i];
 		if (attrib._enabled) {
 			glEnableVertexAttribArray(i);
 			glBindBuffer(GL_ARRAY_BUFFER, attrib._vbo);
@@ -147,7 +147,7 @@ void Shader::use() {
 	}
 }
 
-GLuint Shader::createBuffer(GLenum target, GLsizeiptr size, const GLvoid* data, GLenum usage) {
+GLuint Shader::createBuffer(GLenum target, GLsizeiptr size, const GLvoid *data, GLenum usage) {
 	GLuint vbo;
 	glGenBuffers(1, &vbo);
 	glBindBuffer(target, vbo);
@@ -155,12 +155,12 @@ GLuint Shader::createBuffer(GLenum target, GLsizeiptr size, const GLvoid* data, 
 	return vbo;
 }
 
-VertexAttrib & Shader::getAttributeAt(uint32_t idx) {
+VertexAttrib &Shader::getAttributeAt(uint32_t idx) {
 	assert(idx < _attributes.size());
 	return _attributes[idx];
 }
 
-VertexAttrib & Shader::getAttribute(const char* attrib) {
+VertexAttrib &Shader::getAttribute(const char *attrib) {
 	for (uint32_t i = 0; i < _attributes.size(); ++i)
 		if (_attributes[i]._name.equals(attrib))
 			return _attributes[i];
@@ -168,8 +168,8 @@ VertexAttrib & Shader::getAttribute(const char* attrib) {
 	return _attributes[0];
 }
 
-void Shader::enableVertexAttribute(const char* attrib, GLuint vbo, GLint size, GLenum type, GLboolean normalized, GLsizei stride, uint32_t offset) {
-	VertexAttrib & va = getAttribute(attrib);
+void Shader::enableVertexAttribute(const char *attrib, GLuint vbo, GLint size, GLenum type, GLboolean normalized, GLsizei stride, uint32_t offset) {
+	VertexAttrib &va = getAttribute(attrib);
 	va._enabled = true;
 	va._vbo = vbo;
 	va._size = size;
@@ -179,8 +179,8 @@ void Shader::enableVertexAttribute(const char* attrib, GLuint vbo, GLint size, G
 	va._offset = (const GLvoid *) offset;
 }
 
-void Shader::disableVertexAttribute(const char* attrib, int size, const float* data) {
-	VertexAttrib & va = getAttribute(attrib);
+void Shader::disableVertexAttribute(const char *attrib, int size, const float *data) {
+	VertexAttrib &va = getAttribute(attrib);
 	va._enabled = false;
 	va._size = size;
 	for (int i = 0; i < size; ++i)
