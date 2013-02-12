@@ -1,1 +1,8 @@
+#ifdef GL_ES
+mediump float round(in mediump float x) {
+	return sign(x) * floor(abs(x) + .5);
+}
 
+#define in attribute
+#define out varying
+#endif
