@@ -63,8 +63,11 @@ void AnimationEmi::animate(Skeleton *skel, float delta) {
 
 	for (int bone = 0; bone < _numBones; ++bone) {
 		Bone &curBone = _bones[bone];
-		if (!curBone._target)
+		if (!curBone._target) {
+			if (!skel->hasJoint(curBone._boneName))
+				continue;
 			curBone._target = skel->getJointNamed(curBone._boneName);
+		}
 
 		Math::Matrix4 &relFinal = curBone._target->_finalMatrix;
 		Math::Quaternion &quatFinal = curBone._target->_finalQuat;
