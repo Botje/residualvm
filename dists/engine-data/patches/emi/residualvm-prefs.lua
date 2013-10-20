@@ -26,7 +26,7 @@ function emi_cfg_settable_event(table, index, value)
 end
 
 function emi_cfg_gettable_event(table, index)
-	PrintDebug("Get cfg value " .. index)
+--  PrintDebug("Get cfg value " .. index)
 	value = GetResidualVMPreference(tostring(index))
 
 	--use default value if not found in config
