@@ -269,7 +269,8 @@ void Lua_V1::SetSayLineDefaults() {
 }
 
 void Lua_V1::SayLine() {
-	int vol = 127, buffer = 64, paramId = 1, x = -1, y = -1;
+	int vol = 127, buffer = 64, paramId = 1;
+	float x = -1, y = -1;
 	bool background = true;
 	const char *msgId = NULL;
 	Common::String msg;
@@ -298,7 +299,7 @@ void Lua_V1::SayLine() {
 				paramObj = lua_getparam(paramId++);
 			}
 
-			actor->sayLine(msgId, background); //background, vol, pan, x, y
+			actor->sayLine(msgId, background, x, y); //background, vol, pan, x, y
 		}
 	}
 }
@@ -314,7 +315,8 @@ void Lua_V1::ShutUpActor() {
 }
 
 void Lua_V1::PrintLine() {
-	int vol = 127, buffer = 64, /*paramId = 1, */x = -1, y = -1;
+	int vol = 127, buffer = 64; /*paramId = 1, */
+	float x = -1, y = -1;
 	bool background = true;
 	char msgId[50];
 	Common::String msg;
