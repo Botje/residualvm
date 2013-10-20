@@ -502,6 +502,10 @@ void Lua_V2::SetLayerSortOrder() {
 	}
 }
 
+void Lua_V2::postRestoreHandle() {
+	/* no-op */
+}
+
 // Stub function for builtin functions not yet implemented
 /*static void stubWarning(const char *funcName) {
     warning("Stub function: %s", funcName);

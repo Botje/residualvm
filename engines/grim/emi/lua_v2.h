@@ -31,6 +31,7 @@ class Lua_V2 : public Lua_V1 {
 public:
 	typedef Lua_V2 LuaClass;
 	void registerOpcodes();
+	void postRestoreHandle();
 
 protected:
 	DECLARE_LUA_OPCODE(UndimAll);

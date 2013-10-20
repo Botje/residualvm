@@ -41,7 +41,7 @@ public:
 	typedef Lua_V1 LuaClass;
 	void registerOpcodes();
 	void boot();
-	void postRestoreHandle();
+	virtual void postRestoreHandle();
 
 protected:
 	// Opcodes
