@@ -414,6 +414,8 @@ void GfxOpenGL::startActorDraw(const Math::Vector3d &pos, float scale, const Mat
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
+	_actorQuat = quat;
+
 	if (inOverworld) {
 		// At distance 3.2, a 6.4x4.8 actor fills the screen.
 		glMatrixMode(GL_PROJECTION);
@@ -596,10 +598,10 @@ void GfxOpenGL::drawSprite(const Sprite *sprite) {
 	glPushMatrix();
 	glTranslatef(sprite->_pos.x(), sprite->_pos.y(), sprite->_pos.z());
 
-	if (g_grim->getGameType() == GType_GRIM) {
-		GLdouble modelview[16];
-		glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
+	GLdouble modelview[16];
+	glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
 
+	if (g_grim->getGameType() == GType_GRIM) {
 		// We want screen-aligned sprites so reset the rotation part of the matrix.
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
@@ -611,6 +613,12 @@ void GfxOpenGL::drawSprite(const Sprite *sprite) {
 			}
 		}
 		glLoadMatrixd(modelview);
+	} else {
+		Math::Matrix4 act = _actorQuat.toMatrix();
+		act(3,0) = modelview[12];
+		act(3,1) = modelview[13];
+		act(3,2) = modelview[14];
+		glLoadMatrixf(act.getData());
 	}
 
 	glAlphaFunc(GL_GREATER, 0.5);

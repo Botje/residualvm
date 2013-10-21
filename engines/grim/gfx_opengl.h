@@ -137,6 +137,7 @@ private:
 	GLuint _dimFragProgram;
 	GLint _maxLights;
 	float _alpha;
+	Math::Quaternion _actorQuat;
 };
 
 } // end of namespace Grim
