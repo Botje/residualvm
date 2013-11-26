@@ -19,16 +19,23 @@ uniform highp vec2 texScale;
 uniform bool textured;
 uniform light lights[maxLights];
 uniform bool lightsEnabled;
+uniform bool isBillboard;
 
 out vec2 Texcoord;
 out vec4 Color;
 
 void main()
 {
-	vec4 pos = vec4(position, 1.0);
-	pos = mvpMatrix *
-	      extraMatrix *
-	      pos;
+	vec4 pos;
+	if (isBillboard) {
+		vec4 center = mvpMatrix * extraMatrix * vec4(0.0, 0.0, 0.0, 1.0);
+		center /= center.w;
+		pos = center + vec4(position, 0.0);
+	} else {
+		pos = mvpMatrix *
+		      extraMatrix *
+		      vec4(position, 1.0);
+	}
 
 	gl_Position = projMatrix * pos;
 
