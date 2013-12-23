@@ -98,6 +98,7 @@ GrimEngine::GrimEngine(OSystem *syst, uint32 gameFlags, GrimGameType gameType, C
 	ConfMan.registerDefault("soft_renderer", false);
 	ConfMan.registerDefault("engine_speed", 60);
 	ConfMan.registerDefault("fullscreen", false);
+	ConfMan.registerDefault("scale", 1);
 	ConfMan.registerDefault("show_fps", false);
 	ConfMan.registerDefault("use_arb_shaders", true);
 
@@ -284,7 +285,8 @@ Common::Error GrimEngine::run() {
 
 	bool fullscreen = ConfMan.getBool("fullscreen");
 	createRenderer();
-	g_driver->setupScreen(640, 480, fullscreen);
+	int scale = ConfMan.getInt("scale");
+	g_driver->setupScreen(scale * 640, scale * 480, fullscreen);
 
 	if (getGameType() == GType_MONKEY4 && SearchMan.hasFile("AMWI.m4b")) {
 		// TODO: Play EMI Mac Aspyr logo
