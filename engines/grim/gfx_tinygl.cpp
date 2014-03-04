@@ -265,9 +265,9 @@ byte *GfxTinyGL::setupScreen(int screenW, int screenH, bool fullscreen) {
 	_zb = TinyGL::ZB_open(screenW, screenH, buf);
 	TinyGL::glInit(_zb);
 
-	_screenSize = _gameWidth * _gameHeight * _pixelFormat.bytesPerPixel;
-	_storedDisplay.create(_pixelFormat, _gameWidth * _gameHeight, DisposeAfterUse::YES);
-	_storedDisplay.clear(_gameWidth * _gameHeight);
+	_screenSize = _screenWidth * _screenHeight * _pixelFormat.bytesPerPixel;
+	_storedDisplay.create(_pixelFormat, _screenWidth * _screenHeight, DisposeAfterUse::YES);
+	_storedDisplay.clear(_screenWidth * _screenHeight);
 
 	_currentShadowArray = NULL;
 
@@ -318,7 +318,7 @@ void GfxTinyGL::positionCamera(const Math::Vector3d &pos, const Math::Vector3d &
 
 void GfxTinyGL::clearScreen() {
 	_zb->pbuf.clear(_screenSize);
-	memset(_zb->zbuf, 0, _gameWidth * _gameHeight * sizeof(unsigned int));
+	memset(_zb->zbuf, 0, _screenWidth * _screenHeight * sizeof(unsigned int));
 }
 
 void GfxTinyGL::flipBuffer() {
@@ -591,8 +591,8 @@ void GfxTinyGL::startActorDraw(const Actor *actor) {
 	if (_currentShadowArray) {
 		// TODO find out why shadowMask at device in woods is null
 		if (!_currentShadowArray->shadowMask) {
-			_currentShadowArray->shadowMask = new byte[_gameWidth * _gameHeight];
-			_currentShadowArray->shadowMaskSize = _gameWidth * _gameHeight;
+			_currentShadowArray->shadowMask = new byte[_screenWidth * _screenHeight];
+			_currentShadowArray->shadowMaskSize = _screenWidth * _screenHeight;
 		}
 		assert(_currentShadowArray->shadowMask);
 		//tglSetShadowColor(255, 255, 255);
@@ -693,10 +693,10 @@ void GfxTinyGL::finishActorDraw() {
 void GfxTinyGL::drawShadowPlanes() {
 	tglEnable(TGL_SHADOW_MASK_MODE);
 	if (!_currentShadowArray->shadowMask) {
-		_currentShadowArray->shadowMask = new byte[_gameWidth * _gameHeight];
-		_currentShadowArray->shadowMaskSize = _gameWidth * _gameHeight;
+		_currentShadowArray->shadowMask = new byte[_screenWidth * _screenHeight];
+		_currentShadowArray->shadowMaskSize = _screenWidth * _screenHeight;
 	}
-	memset(_currentShadowArray->shadowMask, 0, _gameWidth * _gameHeight);
+	memset(_currentShadowArray->shadowMask, 0, _screenWidth * _screenHeight);
 
 	tglSetShadowMaskBuf(_currentShadowArray->shadowMask);
 	_currentShadowArray->planeList.begin();
@@ -1358,20 +1358,20 @@ void GfxTinyGL::drawEmergString(int x, int y, const char *text, const Color &fgC
 Bitmap *GfxTinyGL::getScreenshot(int w, int h) {
 	Graphics::PixelBuffer buffer = Graphics::PixelBuffer::createBuffer<565>(w * h, DisposeAfterUse::YES);
 
-	int i1 = (_gameWidth * w - 1) / _gameWidth + 1;
-	int j1 = (_gameHeight * h - 1) / _gameHeight + 1;
+	int i1 = (_screenWidth * w - 1) / _screenWidth + 1;
+	int j1 = (_screenHeight * h - 1) / _screenHeight + 1;
 
 	for (int j = 0; j < j1; j++) {
 		for (int i = 0; i < i1; i++) {
-			int x0 = i * _gameWidth / w;
-			int x1 = ((i + 1) * _gameWidth - 1) / w + 1;
-			int y0 = j * _gameHeight / h;
-			int y1 = ((j + 1) * _gameHeight - 1) / h + 1;
+			int x0 = i * _screenWidth / w;
+			int x1 = ((i + 1) * _screenWidth - 1) / w + 1;
+			int y0 = j * _screenHeight / h;
+			int y1 = ((j + 1) * _screenHeight - 1) / h + 1;
 			uint32 color = 0;
 			for (int y = y0; y < y1; y++) {
 				for (int x = x0; x < x1; x++) {
 					uint8 lr, lg, lb;
-					_zb->pbuf.getRGBAt(y * _gameWidth + x, lr, lg, lb);
+					_zb->pbuf.getRGBAt(y * _screenWidth + x, lr, lg, lb);
 					color += (lr + lg + lb) / 3;
 				}
 			}
@@ -1385,15 +1385,15 @@ Bitmap *GfxTinyGL::getScreenshot(int w, int h) {
 }
 
 void GfxTinyGL::storeDisplay() {
-	_storedDisplay.copyBuffer(0, _gameWidth * _gameHeight, _zb->pbuf);
+	_storedDisplay.copyBuffer(0, _screenWidth * _screenHeight, _zb->pbuf);
 }
 
 void GfxTinyGL::copyStoredToDisplay() {
-	_zb->pbuf.copyBuffer(0, _gameWidth * _gameHeight, _storedDisplay);
+	_zb->pbuf.copyBuffer(0, _screenWidth * _screenHeight, _storedDisplay);
 }
 
 void GfxTinyGL::dimScreen() {
-	for (int l = 0; l < _gameWidth * _gameHeight; l++) {
+	for (int l = 0; l < _screenWidth * _screenHeight; l++) {
 		uint8 r, g, b;
 		_storedDisplay.getRGBAt(l, r, g, b);
 		uint32 color = (r + g + b) / 10;
