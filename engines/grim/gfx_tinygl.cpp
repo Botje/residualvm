@@ -1005,22 +1005,22 @@ void GfxTinyGL::blit(const Graphics::PixelFormat &format, BlitImage *image, byte
 		warning("TinyGL doesn't implement partial screen-dimming yet");
 	}
 
-	if (dstX >= _gameWidth || dstY >= _gameHeight)
+	if (dstX >= _screenWidth || dstY >= _screenHeight)
 		return;
 
 	int clampWidth, clampHeight;
 
-	if (dstX + width > _gameWidth)
-		clampWidth = _gameWidth - dstX;
+	if (dstX + width > _screenWidth)
+		clampWidth = _screenWidth - dstX;
 	else
 		clampWidth = width;
 
-	if (dstY + height > _gameHeight)
-		clampHeight = _gameHeight - dstY;
+	if (dstY + height > _screenHeight)
+		clampHeight = _screenHeight - dstY;
 	else
 		clampHeight = height;
 
-	dst += (dstX + (dstY * _gameWidth)) * format.bytesPerPixel;
+	dst += (dstX + (dstY * _screenWidth)) * format.bytesPerPixel;
 	src += (srcX + (srcY * srcWidth)) * format.bytesPerPixel;
 
 	Graphics::PixelBuffer srcBuf(format, src);
@@ -1029,7 +1029,7 @@ void GfxTinyGL::blit(const Graphics::PixelFormat &format, BlitImage *image, byte
 	if (!trans) {
 		for (int l = 0; l < clampHeight; l++) {
 			dstBuf.copyBuffer(0, clampWidth, srcBuf);
-			dstBuf.shiftBy(_gameWidth);
+			dstBuf.shiftBy(_screenWidth);
 			srcBuf.shiftBy(srcWidth);
 		}
 	} else {
@@ -1047,7 +1047,7 @@ void GfxTinyGL::blit(const Graphics::PixelFormat &format, BlitImage *image, byte
 					length -= skipStart;
 					int skipEnd   = l->x + l->length > maxX ? l->x + l->length - maxX : 0;
 					length -= skipEnd;
-					memcpy(dstBuf.getRawBuffer((l->y - srcY) * _gameWidth + MAX(l->x - srcX, 0)),
+					memcpy(dstBuf.getRawBuffer((l->y - srcY) * _screenWidth + MAX(l->x - srcX, 0)),
 						   l->pixels + skipStart * format.bytesPerPixel, length * format.bytesPerPixel);
 				}
 				l = l->next;
@@ -1059,7 +1059,7 @@ void GfxTinyGL::blit(const Graphics::PixelFormat &format, BlitImage *image, byte
 						dstBuf.setPixelAt(r, srcBuf);
 					}
 				}
-				dstBuf.shiftBy(_gameWidth);
+				dstBuf.shiftBy(_screenWidth);
 				srcBuf.shiftBy(srcWidth);
 			}
 		}
@@ -1405,21 +1405,21 @@ void GfxTinyGL::dimRegion(int x, int y, int w, int h, float level) {
 	for (int ly = y; ly < y + h; ly++) {
 		for (int lx = x; lx < x + w; lx++) {
 			uint8 r, g, b;
-			_zb->pbuf.getRGBAt(ly * _gameWidth + lx, r, g, b);
+			_zb->pbuf.getRGBAt(ly * _screenWidth + lx, r, g, b);
 			uint32 color = (uint32)(((r + g + b) / 3) * level);
-			_zb->pbuf.setPixelAt(ly * _gameWidth + lx, color, color, color);
+			_zb->pbuf.setPixelAt(ly * _screenWidth + lx, color, color, color);
 		}
 	}
 }
 
 void GfxTinyGL::irisAroundRegion(int x1, int y1, int x2, int y2) {
-	for (int ly = 0; ly < _gameHeight; ly++) {
-		for (int lx = 0; lx < _gameWidth; lx++) {
+	for (int ly = 0; ly < _screenHeight; ly++) {
+		for (int lx = 0; lx < _screenWidth; lx++) {
 			// Don't do anything with the data in the region we draw Around
 			if (lx > x1 && lx < x2 && ly > y1 && ly < y2)
 				continue;
 			// But set everything around it to black.
-			_zb->pbuf.setPixelAt(ly * _gameWidth + lx, 0);
+			_zb->pbuf.setPixelAt(ly * _screenWidth + lx, 0);
 		}
 	}
 }
@@ -1435,27 +1435,27 @@ void GfxTinyGL::drawRectangle(const PrimitiveObject *primitive) {
 
 	if (primitive->isFilled()) {
 		for (; y1 <= y2; y1++)
-			if (y1 >= 0 && y1 < _gameHeight)
+			if (y1 >= 0 && y1 < _screenHeight)
 				for (int x = x1; x <= x2; x++)
-					if (x >= 0 && x < _gameWidth)
-						_zb->pbuf.setPixelAt(_gameWidth * y1 + x, c);
+					if (x >= 0 && x < _screenWidth)
+						_zb->pbuf.setPixelAt(_screenWidth * y1 + x, c);
 	} else {
-		if (y1 >= 0 && y1 < _gameHeight)
+		if (y1 >= 0 && y1 < _screenHeight)
 			for (int x = x1; x <= x2; x++)
-				if (x >= 0 && x < _gameWidth)
-					_zb->pbuf.setPixelAt(_gameWidth * y1 + x, c);
-		if (y2 >= 0 && y2 < _gameHeight)
+				if (x >= 0 && x < _screenWidth)
+					_zb->pbuf.setPixelAt(_screenWidth * y1 + x, c);
+		if (y2 >= 0 && y2 < _screenHeight)
 			for (int x = x1; x <= x2; x++)
-				if (x >= 0 && x < _gameWidth)
-					_zb->pbuf.setPixelAt(_gameWidth * y2 + x, c);
-		if (x1 >= 0 && x1 < _gameWidth)
+				if (x >= 0 && x < _screenWidth)
+					_zb->pbuf.setPixelAt(_screenWidth * y2 + x, c);
+		if (x1 >= 0 && x1 < _screenWidth)
 			for (int y = y1; y <= y2; y++)
-				if (y >= 0 && y < _gameHeight)
-					_zb->pbuf.setPixelAt(_gameWidth * y + x1, c);
-		if (x2 >= 0 && x2 < _gameWidth)
+				if (y >= 0 && y < _screenHeight)
+					_zb->pbuf.setPixelAt(_screenWidth * y + x1, c);
+		if (x2 >= 0 && x2 < _screenWidth)
 			for (int y = y1; y <= y2; y++)
-				if (y >= 0 && y < _gameHeight)
-					_zb->pbuf.setPixelAt(_gameWidth * y + x2, c);
+				if (y >= 0 && y < _screenHeight)
+					_zb->pbuf.setPixelAt(_screenWidth * y + x2, c);
 	}
 }
 
@@ -1469,16 +1469,16 @@ void GfxTinyGL::drawLine(const PrimitiveObject *primitive) {
 
 	if (x2 == x1) {
 		for (int y = y1; y <= y2; y++) {
-			if (x1 >= 0 && x1 < _gameWidth && y >= 0 && y < _gameHeight)
-				_zb->pbuf.setPixelAt(_gameWidth * y + x1, color.getRed(), color.getGreen(), color.getBlue());
+			if (x1 >= 0 && x1 < _screenWidth && y >= 0 && y < _screenHeight)
+				_zb->pbuf.setPixelAt(_screenWidth * y + x1, color.getRed(), color.getGreen(), color.getBlue());
 		}
 	} else {
 		float m = (y2 - y1) / (x2 - x1);
 		int b = (int)(-m * x1 + y1);
 		for (int x = x1; x <= x2; x++) {
 			int y = (int)(m * x) + b;
-			if (x >= 0 && x < _gameWidth && y >= 0 && y < _gameHeight)
-				_zb->pbuf.setPixelAt(_gameWidth * y + x, color.getRed(), color.getGreen(), color.getBlue());
+			if (x >= 0 && x < _screenWidth && y >= 0 && y < _screenHeight)
+				_zb->pbuf.setPixelAt(_screenWidth * y + x, color.getRed(), color.getGreen(), color.getBlue());
 		}
 	}
 }
@@ -1502,15 +1502,15 @@ void GfxTinyGL::drawPolygon(const PrimitiveObject *primitive) {
 	b = (int)(-m * x1 + y1);
 	for (int x = x1; x <= x2; x++) {
 		int y = (int)(m * x) + b;
-		if (x >= 0 && x < _gameWidth && y >= 0 && y < _gameHeight)
-			_zb->pbuf.setPixelAt(_gameWidth * y + x, c);
+		if (x >= 0 && x < _screenWidth && y >= 0 && y < _screenHeight)
+			_zb->pbuf.setPixelAt(_screenWidth * y + x, c);
 	}
 	m = (y4 - y3) / (x4 - x3);
 	b = (int)(-m * x3 + y3);
 	for (int x = x3; x <= x4; x++) {
 		int y = (int)(m * x) + b;
-		if (x >= 0 && x < _gameWidth && y >= 0 && y < _gameHeight)
-			_zb->pbuf.setPixelAt(_gameWidth * y + x, c);
+		if (x >= 0 && x < _screenWidth && y >= 0 && y < _screenHeight)
+			_zb->pbuf.setPixelAt(_screenWidth * y + x, c);
 	}
 }
 
