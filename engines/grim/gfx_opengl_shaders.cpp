@@ -402,6 +402,8 @@ void GfxOpenGLS::positionCamera(const Math::Vector3d &pos, const Math::Vector3d 
 		Math::Matrix4 lookMatrix = makeLookMatrix(pos, interest, up_vec);
 
 		_viewMatrix = viewMatrix * lookMatrix;
+		_mvpMatrix = projMatrix * viewMatrix;
+
 		_viewMatrix.transpose();
 	}
 }
@@ -417,7 +419,66 @@ void GfxOpenGLS::flipBuffer() {
 
 
 void GfxOpenGLS::getBoundingBoxPos(const Mesh *mesh, int *x1, int *y1, int *x2, int *y2) {
+	if (_currentShadowArray) {
+		*x1 = -1;
+		*y1 = -1;
+		*x2 = -1;
+		*y2 = -1;
+		return;
+	}
 
+	double top = 1000;
+	double right = -1000;
+	double left = 1000;
+	double bottom = -1000;
+
+	for (int i = 0; i < mesh->_numFaces; i++) {
+		for (int j = 0; j < mesh->_faces[i]._numVertices; j++) {
+			float *pVertices = mesh->_vertices + 3 * mesh->_faces[i]._vertices[j];
+
+			Math::Vector4d v = Math::Vector4d(*(pVertices), *(pVertices + 1), *(pVertices + 2), 1.0f);
+			v = _mvpMatrix * v;
+			v /= v.w();
+
+			double winX = (1 + v.x()) / 2.0f * _gameWidth;
+			double winY = (1 + v.y()) / 2.0f * _gameHeight;
+
+			if (winX > right)
+				right = winX;
+			if (winX < left)
+				left = winX;
+			if (winY < top)
+				top = winY;
+			if (winY > bottom)
+				bottom = winY;
+		}
+	}
+
+	double t = bottom;
+	bottom = _gameHeight - top;
+	top = _gameHeight - t;
+
+	if (left < 0)
+		left = 0;
+	if (right >= _gameWidth)
+		right = _gameWidth - 1;
+	if (top < 0)
+		top = 0;
+	if (bottom >= _gameHeight)
+		bottom = _gameHeight - 1;
+
+	if (top >= _gameHeight || left >= _gameWidth || bottom < 0 || right < 0) {
+		*x1 = -1;
+		*y1 = -1;
+		*x2 = -1;
+		*y2 = -1;
+		return;
+	}
+
+	*x1 = (int)left;
+	*y1 = (int)top;
+	*x2 = (int)right;
+	*y2 = (int)bottom;
 }
 
 void GfxOpenGLS::getBoundingBoxPos(const EMIModel *model, int *x1, int *y1, int *x2, int *y2) {
@@ -520,9 +581,8 @@ void GfxOpenGLS::startActorDraw(const Actor *actor) {
 
 		modelMatrix.transpose();
 		modelMatrix.setPosition(pos);
+		_mvpMatrix = _mvpMatrix * modelMatrix * extraMatrix;
 		modelMatrix.transpose();
-		_mvpMatrix = _viewMatrix * modelMatrix;
-		_mvpMatrix.transpose();
 
 		_actorProgram->setUniform("modelMatrix", modelMatrix);
 		_actorProgram->setUniform("viewMatrix", _viewMatrix);
