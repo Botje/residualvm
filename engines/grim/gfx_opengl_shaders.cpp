@@ -862,10 +862,6 @@ void GfxOpenGLS::clearShadowMode() {
 	glDepthMask(GL_TRUE);
 }
 
-bool GfxOpenGLS::isShadowModeActive() {
-	return false;
-}
-
 void GfxOpenGLS::setShadowColor(byte r, byte g, byte b) {
 	_shadowColorR = r;
 	_shadowColorG = g;

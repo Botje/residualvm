@@ -77,7 +77,6 @@ public:
 	virtual void drawShadowPlanes() override;
 	virtual void setShadowMode() override;
 	virtual void clearShadowMode() override;
-	virtual bool isShadowModeActive() override;
 	virtual void setShadowColor(byte r, byte g, byte b) override;
 	virtual void getShadowColor(byte *r, byte *g, byte *b) override;
 
