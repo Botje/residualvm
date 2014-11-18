@@ -1,7 +1,8 @@
-struct light {
+struct Light {
 	vec4 _position;
 	vec4 _direction;
 	vec4 _color;
+	vec4 _params;
 };
 
 struct shadow_info {
@@ -26,9 +27,10 @@ uniform highp mat4 projMatrix;
 uniform highp mat4 extraMatrix;
 uniform highp vec2 texScale;
 uniform bool textured;
-uniform light lights[maxLights];
+uniform Light lights[maxLights];
 uniform shadow_info shadow;
 uniform bool lightsEnabled;
+uniform bool hasAmbient;
 
 out vec2 Texcoord;
 out vec4 Color;
@@ -58,37 +60,49 @@ void main()
 		Texcoord = vec2(0.0, 0.0);
 	}
 
-/*
-	if (lightsEnabled) {
-		vec3 normal_eye = normalize((mvpMatrix * extraMatrix * vec4(normal, 0.0))).xyz;
+	Color = color;
+
+	if (shadow._active) {
+		Color = vec4(shadow._color, 1.0);
+	} else if (lightsEnabled) {
 		vec3 light = vec3(0.0, 0.0, 0.0);
+		vec3 normalEye = normalize((viewMatrix * modelMatrix * extraMatrix * vec4(normal, 0.0))).xyz;
+
 		for (int i = 0; i < maxLights; ++i) {
 			if (lights[i]._color.w != 0.0) {
-				vec3 faceToLight = normalize(lights[i]._position - pos).xyz;
+				vec3 color = lights[i]._color.xyz;
 				if (lights[i]._position.w == 1.0) {
-					float incidence = dot(normal_eye, faceToLight);
-					if (incidence > 0.0) {
-						if (lights[i]._direction.w == -1.0) {
-							light += incidence * DIFFUSE_FACTOR * lights[i]._color.rgb;
-						} else {
-							vec3 lightDir = normalize(lights[i]._direction.xyz);
-							float cos_angle = dot(lightDir, faceToLight);
-							float incidence2 = max(-cos_angle, 0.0);
-							light += incidence2 * DIFFUSE_FACTOR * lights[i]._color.rgb;
-						}
+					vec3 vertexToLight = lights[i]._position.xyz - pos.xyz;
+					float falloffNear = 0.0;
+					float falloffFar = 0.0;
+					float dist = length(vertexToLight);
+
+					float attn = clamp(1.0 - (dist - falloffNear) / max(0.001, falloffFar - falloffNear), 0.0, 1.0);
+					color *= attn;
+
+					if (lights[i]._direction.w != -1.0) { // Spotlight
+						float cosAngle = max(0.0, dot(lights[i]._direction.xyz, vertexToLight));
+						float cosPenumbra = lights[i]._params.z;
+						float cosUmbra = lights[i]._params.w;
+						float cone = clamp((cosAngle - cosPenumbra) / max(0.001, cosUmbra - cosPenumbra), 0.0, 1.0);
+						color *= cone;
 					}
-				} else {
-					vec3 lightDir = normalize(lights[i]._position.xyz);
-					float incidence = dot(lightDir, faceToLight);
-					light += max(-incidence, 0.0) * DIFFUSE_FACTOR * lights[i]._color.rgb;
+					vertexToLight = normalize(vertexToLight);
+					float incidence = max(0.0, dot(normalEye, vertexToLight));
+					color *= incidence;
+				} else if (lights[i]._direction.w == -1.0) { // Ambient or directional
+					if (lights[i]._position.w != -1.0) { // Directional
+						float incidence = max(0.0, dot(normalEye, -lights[i]._position.xyz));
+						color *= incidence;
+					}
 				}
+				light += color;
 			}
 		}
-		Color = color * vec4(light, 1.0);
-	} else */ {
-		Color = color;
-		if (shadow._active) {
-			Color = vec4(shadow._color, 1.0);
-		}
+
+		if (!hasAmbient)
+			light += vec3(0.5, 0.5, 0.5);
+		light /= max(1.0, max(max(light.x, light.y), light.z));
+		Color *= vec4(light, 1.0);
 	}
 }
