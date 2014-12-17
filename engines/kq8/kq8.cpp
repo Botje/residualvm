@@ -38,7 +38,8 @@
 namespace KQ8 {
 
 KQ8Engine::KQ8Engine(OSystem *syst, const KQ8GameDescription *version) :
-		Engine(syst), _system(syst), _gameDescription(version)
+		Engine(syst), _system(syst), _gameDescription(version),
+		_quitting(false)
 		{
 
 	const Common::FSNode baseDir(ConfMan.get("path"));
@@ -58,12 +59,31 @@ bool KQ8Engine::hasFeature(EngineFeature f) const {
 Common::Error KQ8Engine::run() {
 	_rnd = new Common::RandomSource("sprint");
 
-	while (true) {
+	_system->showMouse(true);
+
+	while (!_quitting) {
+		processInput();
 	}
 
 	_system->lockMouse(false);
 
 	return Common::kNoError;
+}
+
+void KQ8Engine::processInput() {
+	Common::Event event;
+
+	while (getEventManager()->pollEvent(event)) {
+		if (event.type == Common::EVENT_KEYDOWN) {
+			switch (event.kbd.keycode) {
+			case Common::KEYCODE_ESCAPE:
+				_quitting = true;
+				break;
+			default:
+				break;
+			}
+		}
+	}
 }
 
 void KQ8Engine::settingsInitDefaults() {

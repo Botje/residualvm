@@ -68,6 +68,9 @@ private:
 	const KQ8GameDescription *_gameDescription;
 
 	bool checkDatafiles();
+	void processInput();
+
+	bool _quitting;
 };
 
 } // end of namespace Myst3
