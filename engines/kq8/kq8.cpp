@@ -34,6 +34,7 @@
 #include "engines/engine.h"
 
 #include "engines/kq8/kq8.h"
+#include "engines/kq8/script.h"
 
 namespace KQ8 {
 
@@ -69,6 +70,9 @@ Common::Error KQ8Engine::run() {
 	_rnd = new Common::RandomSource("sprint");
 
 	_system->showMouse(true);
+
+	Script s("Mask.cs");
+	s.execute();
 
 	while (!_quitting) {
 		processInput();
