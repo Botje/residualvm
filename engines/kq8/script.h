@@ -24,6 +24,7 @@
 #define KQ8_SCRIPT_H
 
 #include "common/str.h"
+#include "common/array.h"
 #include "common/stream.h"
 
 
@@ -34,11 +35,14 @@ class BlockStatement;
 typedef Common::SharedPtr<Statement> StatementPtr;
 typedef Common::SharedPtr<BlockStatement> BlockStatementPtr;
 
+
 class Script {
 	public:
+	typedef Common::Array<Common::String> Args;
+
 	Script(const Common::String &fname);
 
-	void execute();
+	void execute(const Args& args);
 
 	private:
 	void parse(Common::SeekableReadStream *s);

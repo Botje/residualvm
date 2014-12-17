@@ -72,7 +72,10 @@ Common::Error KQ8Engine::run() {
 	_system->showMouse(true);
 
 	Script s("Mask.cs");
-	s.execute();
+	Script::Args args;
+	args.push_back("dummy");
+	args.push_back("Init");
+	s.execute(args);
 
 	while (!_quitting) {
 		processInput();

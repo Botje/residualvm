@@ -26,6 +26,7 @@
 #include "common/foreach.h"
 #include "common/stack.h"
 #include "common/tokenizer.h"
+#include "common/util.h"
 
 #include "engines/kq8/script.h"
 
@@ -34,7 +35,7 @@ namespace KQ8 {
 class Statement {
 	public:
 	virtual ~Statement() {}
-	virtual void execute() {}
+	virtual void execute(const Script::Args& args) {}
 
 	protected:
 	Statement() {}
@@ -49,7 +50,7 @@ class SimpleStatement : public Statement {
 		}
 	}
 
-	virtual void execute() {
+	virtual void execute(const Script::Args& args) {
 		Common::String line;
 		foreach(const Common::String& tok, _tokens) {
 			if (tok != _tokens[0])
@@ -73,9 +74,9 @@ class BlockStatement : public Statement {
 		_children.push_back(p);
 	}
 
-	virtual void execute() {
+	virtual void execute(const Script::Args& args) {
 		foreach(const StatementPtr& s, _children) {
-			s->execute();
+			s->execute(args);
 		}
 	}
 
@@ -88,13 +89,27 @@ class IfStatement : public SimpleStatement {
 			: SimpleStatement(lineNumber, tok) {
 	}
 
-	virtual void execute() {
-		SimpleStatement::execute();
-		_cons->execute();
+	virtual void execute(const Script::Args& args) {
+		assert(_tokens[0] == "test");
+		assert(_tokens[2] == "==");
+		if (resolve(args, _tokens[1]) == resolve(args, _tokens[3])) {
+			_cons->execute(args);
+		} else {
+			_alt->execute(args);
+		}
 	}
 
 	BlockStatementPtr _cons;
 	BlockStatementPtr _alt;
+
+	private:
+	const Common::String resolve(const Script::Args& args, const Common::String& token) {
+		if (token[0] == '$' && Common::isDigit(token[1]))
+			return args[int(token[1] - '1')];
+		if (token[0] == '$')
+			return ""; // FIXME: look up in global environment
+		return token;
+	}
 };
 
 Script::Script(const Common::String& fname)
@@ -106,9 +121,9 @@ Script::Script(const Common::String& fname)
 	}
 }
 
-void Script::execute() {
+void Script::execute(const Script::Args& args) {
 	if (_body)
-		_body->execute();
+		_body->execute(args);
 }
 
 
