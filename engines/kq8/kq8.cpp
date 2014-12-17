@@ -43,7 +43,16 @@ KQ8Engine::KQ8Engine(OSystem *syst, const KQ8GameDescription *version) :
 		{
 
 	const Common::FSNode baseDir(ConfMan.get("path"));
-	SearchMan.addDirectory("GAME", baseDir.getChild("GAME"), 0, 3, true);
+	const Common::FSNode gameDir(baseDir.getChild("GAME"));
+	SearchMan.addDirectory("GAME/8Gui",gameDir.getChild("8Gui"),0);
+	SearchMan.addDirectory("GAME/Common",gameDir.getChild("Common"),0);
+	SearchMan.addDirectory("GAME/ENGLISH",gameDir.getChild("ENGLISH"),0);
+	SearchMan.addDirectory("GAME/Kq",gameDir.getChild("Kq"),0);
+	SearchMan.addDirectory("GAME/Resource",gameDir.getChild("Resource"),0);
+	SearchMan.addDirectory("GAME/SOUND",gameDir.getChild("SOUND"),0);
+
+	SearchMan.addDirectory("GAME/patch",gameDir.getChild("patch"),50);
+
 
 	settingsInitDefaults();
 }
