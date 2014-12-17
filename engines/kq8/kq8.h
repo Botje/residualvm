@@ -73,6 +73,6 @@ private:
 	bool _quitting;
 };
 
-} // end of namespace Myst3
+} // end of namespace KQ8
 
 #endif

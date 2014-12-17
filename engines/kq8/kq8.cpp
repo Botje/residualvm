@@ -103,4 +103,4 @@ void KQ8Engine::syncSoundSettings() {
 	_mixer->setVolumeForSoundType(Audio::Mixer::kMusicSoundType, soundVolumeMusic * soundOverall / 256);
 }
 
-} // end of namespace Myst3
+} // end of namespace KQ8
