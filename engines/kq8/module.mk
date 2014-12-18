@@ -2,6 +2,7 @@ MODULE := engines/kq8
 
 MODULE_OBJS := \
 	detection.o \
+	inifile.o \
 	kq8.o \
 	script.o
 
