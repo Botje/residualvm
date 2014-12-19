@@ -29,88 +29,9 @@
 #include "common/util.h"
 
 #include "engines/kq8/script.h"
+#include "engines/kq8/statements.h"
 
 namespace KQ8 {
-
-class Statement {
-	public:
-	virtual ~Statement() {}
-	virtual void execute(const Script::Args& args) {}
-
-	protected:
-	Statement() {}
-};
-
-class SimpleStatement : public Statement {
-	public:
-	SimpleStatement(uint16 lineNumber, Common::StringTokenizer& tok)
-			: _lineNumber(lineNumber) {
-		while (!tok.empty()) {
-			_tokens.push_back(tok.nextToken());
-		}
-	}
-
-	virtual void execute(const Script::Args& args) {
-		Common::String line;
-		foreach(const Common::String& tok, _tokens) {
-			if (tok != _tokens[0])
-				line += " ";
-			line += tok;
-		}
-		debug("%03d: %s", _lineNumber, line.c_str());
-	}
-
-	Common::Array<Common::String> _tokens;
-	uint16 _lineNumber;
-};
-
-class BlockStatement : public Statement {
-	public:
-	StatementPtr & lastChild() {
-		return _children.back();
-	}
-
-	virtual void addStatement(const StatementPtr p) {
-		_children.push_back(p);
-	}
-
-	virtual void execute(const Script::Args& args) {
-		foreach(const StatementPtr& s, _children) {
-			s->execute(args);
-		}
-	}
-
-	Common::Array<StatementPtr> _children;
-};
-
-class IfStatement : public SimpleStatement {
-	public:
-	IfStatement(uint16 lineNumber, Common::StringTokenizer& tok)
-			: SimpleStatement(lineNumber, tok) {
-	}
-
-	virtual void execute(const Script::Args& args) {
-		assert(_tokens[0] == "test");
-		assert(_tokens[2] == "==");
-		if (resolve(args, _tokens[1]) == resolve(args, _tokens[3])) {
-			_cons->execute(args);
-		} else {
-			_alt->execute(args);
-		}
-	}
-
-	BlockStatementPtr _cons;
-	BlockStatementPtr _alt;
-
-	private:
-	const Common::String resolve(const Script::Args& args, const Common::String& token) {
-		if (token[0] == '$' && Common::isDigit(token[1]))
-			return args[int(token[1] - '1')];
-		if (token[0] == '$')
-			return ""; // FIXME: look up in global environment
-		return token;
-	}
-};
 
 Script::Script(const Common::String& fname)
 		: _fname(fname) {
@@ -121,7 +42,7 @@ Script::Script(const Common::String& fname)
 	}
 }
 
-void Script::execute(const Script::Args& args) {
+void Script::execute(const Args& args) {
 	if (_body)
 		_body->execute(args);
 }

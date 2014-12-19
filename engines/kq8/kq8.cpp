@@ -72,8 +72,8 @@ Common::Error KQ8Engine::run() {
 	_system->showMouse(true);
 
 	Script s("Mask.cs");
-	Script::Args args;
-	args.push_back("dummy");
+	Args args;
+	args.push_back("Mask");
 	args.push_back("Init");
 	s.execute(args);
 

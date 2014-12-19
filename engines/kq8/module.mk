@@ -4,7 +4,8 @@ MODULE_OBJS := \
 	detection.o \
 	inifile.o \
 	kq8.o \
-	script.o
+	script.o \
+	statements.o
 
 # This module can be built as a plugin
 ifeq ($(ENABLE_KQ8), DYNAMIC_PLUGIN)

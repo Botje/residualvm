@@ -27,19 +27,12 @@
 #include "common/array.h"
 #include "common/stream.h"
 
+#include "engines/kq8/statements.h"
 
 namespace KQ8 {
 
-class Statement;
-class BlockStatement;
-typedef Common::SharedPtr<Statement> StatementPtr;
-typedef Common::SharedPtr<BlockStatement> BlockStatementPtr;
-
-
 class Script {
 	public:
-	typedef Common::Array<Common::String> Args;
-
 	Script(const Common::String &fname);
 
 	void execute(const Args& args);
