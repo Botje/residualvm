@@ -24,6 +24,8 @@
 #define KQ8_STATEMENTS_H
 
 #include "common/array.h"
+#include "common/hash-str.h"
+#include "common/hashmap.h"
 #include "common/ptr.h"
 #include "common/str.h"
 #include "common/tokenizer.h"
@@ -35,7 +37,7 @@ class BlockStatement;
 typedef Common::SharedPtr<Statement> StatementPtr;
 typedef Common::SharedPtr<BlockStatement> BlockStatementPtr;
 typedef Common::Array<Common::String> Args;
-
+extern Common::HashMap<Common::String, Common::String> g_env;
 }
 
 #include "engines/kq8/script.h"
