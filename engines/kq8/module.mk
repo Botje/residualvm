@@ -5,7 +5,9 @@ MODULE_OBJS := \
 	inifile.o \
 	kq8.o \
 	script.o \
-	statements.o
+	statements.o \
+	vol/archive.o \
+	vol/blast.o
 
 # This module can be built as a plugin
 ifeq ($(ENABLE_KQ8), DYNAMIC_PLUGIN)
