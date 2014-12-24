@@ -71,7 +71,7 @@ bool KQ8Engine::hasFeature(EngineFeature f) const {
 }
 
 Common::Error KQ8Engine::run() {
-	_rnd = new Common::RandomSource("sprint");
+	_rnd = new Common::RandomSource("kq8");
 
 	_system->showMouse(true);
 
