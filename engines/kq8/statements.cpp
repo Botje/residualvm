@@ -71,10 +71,19 @@ void deleteObject(const Args& args) {
 	}
 }
 
+void set(const Args& args) {
+	if (args[0] == "\"\"") {
+		g_env.erase(args[0]);
+	} else {
+		g_env[args[0]] = args[1];
+	}
+}
+
 bool registerPrimitives() {
 	g_primitives["loadVolume"] = &loadVolume;
 	g_primitives["deleteObject"] = &deleteObject;
 	g_primitives["setcat"] = &setcat;
+	g_primitives["set"] = &set;
 	return true;
 }
 
