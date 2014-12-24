@@ -25,6 +25,7 @@
 #include "common/hashmap.h"
 #include "common/hash-str.h"
 
+#include "engines/kq8/kq8.h"
 #include "engines/kq8/statements.h"
 
 namespace KQ8 {
@@ -55,7 +56,14 @@ void setcat(const Args& args) {
 	g_env[var] = val;
 }
 
+void loadVolume(const Args& args) {
+	const Common::String& volName = args[0];
+	const Common::String& path = args[1];
+	g_kq8->loadVolume(volName, path);
+}
+
 bool registerPrimitives() {
+	g_primitives["loadVolume"] = &loadVolume;
 	g_primitives["setcat"] = &setcat;
 	return true;
 }

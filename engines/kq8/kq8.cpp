@@ -35,8 +35,11 @@
 
 #include "engines/kq8/kq8.h"
 #include "engines/kq8/script.h"
+#include "engines/kq8/vol/archive.h"
 
 namespace KQ8 {
+
+KQ8Engine *g_kq8 = nullptr;
 
 KQ8Engine::KQ8Engine(OSystem *syst, const KQ8GameDescription *version) :
 		Engine(syst), _system(syst), _gameDescription(version),
@@ -54,6 +57,7 @@ KQ8Engine::KQ8Engine(OSystem *syst, const KQ8GameDescription *version) :
 
 	SearchMan.addDirectory("GAME/patch",gameDir.getChild("patch"),50);
 
+	g_kq8 = this;
 
 	settingsInitDefaults();
 }
@@ -117,6 +121,28 @@ void KQ8Engine::syncSoundSettings() {
 
 	_mixer->setVolumeForSoundType(Audio::Mixer::kSFXSoundType, soundOverall);
 	_mixer->setVolumeForSoundType(Audio::Mixer::kMusicSoundType, soundVolumeMusic * soundOverall / 256);
+}
+
+void KQ8Engine::loadVolume(const Common::String& volName, const Common::String& path) {
+	if (SearchMan.hasArchive(volName))
+		SearchMan.remove(volName);
+
+	Common::FSNode volPath(ConfMan.get("path") + "/data/" + path + ".vol");
+	if (volPath.exists()) {
+		Common::ScopedPtr<VolArchive> v(new VolArchive());
+		if (v->open(volPath)) {
+			SearchMan.add(volName, v.release(), 100, true);
+			return;
+		}
+	}
+
+	Common::FSNode fullPath(ConfMan.get("path") + "/data/" + path);
+	if (fullPath.isDirectory()) {
+		SearchMan.addDirectory(volName, fullPath, 100, 3, true);
+		return;
+	}
+
+	warning("Could not load volume %s from %s", volName.c_str(), path.c_str());
 }
 
 } // end of namespace KQ8

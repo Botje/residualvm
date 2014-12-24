@@ -63,6 +63,7 @@ public:
 	Common::Language getDefaultLanguage() const;
 
 	virtual void settingsInitDefaults();
+	void loadVolume(const Common::String& volName, const Common::String& path);
 private:
 	OSystem *_system;
 	const KQ8GameDescription *_gameDescription;
@@ -72,6 +73,8 @@ private:
 
 	bool _quitting;
 };
+
+extern KQ8Engine *g_kq8;
 
 } // end of namespace KQ8
 
