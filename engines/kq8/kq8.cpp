@@ -145,4 +145,9 @@ void KQ8Engine::loadVolume(const Common::String& volName, const Common::String& 
 	warning("Could not load volume %s from %s", volName.c_str(), path.c_str());
 }
 
+void KQ8Engine::unloadVolume(const Common::String& volName) {
+	if (SearchMan.hasArchive(volName))
+		SearchMan.remove(volName);
+}
+
 } // end of namespace KQ8

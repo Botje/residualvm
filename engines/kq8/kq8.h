@@ -64,6 +64,7 @@ public:
 
 	virtual void settingsInitDefaults();
 	void loadVolume(const Common::String& volName, const Common::String& path);
+	void unloadVolume(const Common::String& volName);
 private:
 	OSystem *_system;
 	const KQ8GameDescription *_gameDescription;

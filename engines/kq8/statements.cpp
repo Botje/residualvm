@@ -62,8 +62,18 @@ void loadVolume(const Args& args) {
 	g_kq8->loadVolume(volName, path);
 }
 
+void deleteObject(const Args& args) {
+	const Common::String& val = args[0];
+	if (val.hasPrefix("KQWorld::")) {
+		g_kq8->unloadVolume(val);
+	} else {
+		warning("Unknown argument to deleteObject '%s'", val.c_str());
+	}
+}
+
 bool registerPrimitives() {
 	g_primitives["loadVolume"] = &loadVolume;
+	g_primitives["deleteObject"] = &deleteObject;
 	g_primitives["setcat"] = &setcat;
 	return true;
 }
