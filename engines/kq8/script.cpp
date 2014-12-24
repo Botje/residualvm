@@ -35,7 +35,10 @@ namespace KQ8 {
 
 Script::Script(const Common::String& fname)
 		: _fname(fname) {
-	Common::SeekableReadStream *s = SearchMan.getMember(fname)->createReadStream();
+	const Common::ArchiveMemberPtr ptr = SearchMan.getMember(fname);
+	if (!ptr)
+		error("Script %s not found!", fname.c_str());
+	Common::SeekableReadStream *s = ptr->createReadStream();
 	if (s) {
 		parse(s);
 		delete s;
