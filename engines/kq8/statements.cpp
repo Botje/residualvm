@@ -102,7 +102,11 @@ void SimpleStatement::execute(const Args& args) {
 	static bool registered = registerPrimitives();
 	registered = !!registered;
 
-	if (g_primitives.contains(actual[0])) {
+	if (actual[0].hasSuffix(".cs")) {
+		Script s(actual[0]);
+		Args scriptArgs(actual.begin()+1, actual.size()-1);
+		s.execute(scriptArgs);
+	} else if (g_primitives.contains(actual[0])) {
 		Args primArgs(actual.begin()+1, actual.size()-1);
 		g_primitives[actual[0]](primArgs);
 	}
