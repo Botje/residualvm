@@ -97,7 +97,7 @@ void SimpleStatement::execute(const Args& args) {
 			line += " ";
 		line += tok;
 	}
-	debug("%03d: %s", _lineNumber, line.c_str());
+	debug("%s:%03d: %s", g_scriptStack.top()->getName().c_str(), _lineNumber, line.c_str());
 
 	static bool registered = registerPrimitives();
 	registered = !!registered;

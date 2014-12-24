@@ -33,6 +33,8 @@
 
 namespace KQ8 {
 
+Common::Stack<const Script *> g_scriptStack;
+
 Script::Script(const Common::String& fname)
 		: _fname(fname) {
 	const Common::ArchiveMemberPtr ptr = SearchMan.getMember(fname);
@@ -46,8 +48,11 @@ Script::Script(const Common::String& fname)
 }
 
 void Script::execute(const Args& args) {
-	if (_body)
+	if (_body) {
+		g_scriptStack.push(this);
 		_body->execute(args);
+		g_scriptStack.pop();
+	}
 }
 
 

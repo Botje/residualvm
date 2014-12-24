@@ -25,6 +25,7 @@
 
 #include "common/str.h"
 #include "common/array.h"
+#include "common/stack.h"
 #include "common/stream.h"
 
 #include "engines/kq8/statements.h"
@@ -35,6 +36,8 @@ class Script {
 	public:
 	Script(const Common::String &fname);
 
+	const Common::String& getName() const { return _fname; }
+
 	void execute(const Args& args);
 
 	private:
@@ -43,6 +46,8 @@ class Script {
 	const Common::String _fname;
 	BlockStatementPtr _body;
 };
+
+extern Common::Stack<const Script *> g_scriptStack;
 
 } // end of namespace KQ8
 #endif
