@@ -123,7 +123,7 @@ void BlockStatement::execute(const Args& args) {
 }
 
 IfStatement::IfStatement(uint16 lineNumber, Common::StringTokenizer& tok)
-		: SimpleStatement(lineNumber, tok) {
+		: SimpleStatement(lineNumber, tok), _cons(new BlockStatement()), _alt(new BlockStatement()) {
 }
 
 void IfStatement::execute(const Args& args) {

@@ -69,15 +69,12 @@ void Script::parse(Common::SeekableReadStream *s) {
 		const Common::String first = tok.nextToken();
 		if (first == "if") {
 			IfStatement *i = new IfStatement(lineNumber, tok);
-			BlockStatementPtr b(new BlockStatement());
-			i->_cons = b;
 			nesting.top()->addStatement(StatementPtr(i));
-			nesting.push(b);
+			nesting.push(i->_cons);
 		} else if (first == "else") {
 			nesting.pop();
 			StatementPtr last = nesting.top()->lastChild();
 			IfStatement *i = dynamic_cast<IfStatement *>(last.get());
-			i->_alt = BlockStatementPtr(new BlockStatement());
 			nesting.push(i->_alt);
 			goto again;
 		} else if (first == "endif") {
