@@ -127,22 +127,24 @@ void KQ8Engine::loadVolume(const Common::String& volName, const Common::String& 
 	if (SearchMan.hasArchive(volName))
 		SearchMan.remove(volName);
 
+	bool found = false;
 	Common::FSNode volPath(ConfMan.get("path") + "/data/" + path + ".vol");
 	if (volPath.exists()) {
 		Common::ScopedPtr<VolArchive> v(new VolArchive());
 		if (v->open(volPath)) {
 			SearchMan.add(volName, v.release(), 100, true);
-			return;
 		}
+		found = true;
 	}
 
 	Common::FSNode fullPath(ConfMan.get("path") + "/data/" + path);
 	if (fullPath.isDirectory()) {
-		SearchMan.addDirectory(volName, fullPath, 100, 3, true);
-		return;
+		SearchMan.addDirectory(volName, fullPath, 100, 1, true);
+		found = true;
 	}
 
-	warning("Could not load volume %s from %s", volName.c_str(), path.c_str());
+	if (!found)
+		warning("Could not load volume %s from %s", volName.c_str(), path.c_str());
 }
 
 void KQ8Engine::unloadVolume(const Common::String& volName) {
