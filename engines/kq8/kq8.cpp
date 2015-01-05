@@ -132,14 +132,14 @@ void KQ8Engine::loadVolume(const Common::String& volName, const Common::String& 
 	if (volPath.exists()) {
 		Common::ScopedPtr<VolArchive> v(new VolArchive());
 		if (v->open(volPath)) {
-			SearchMan.add(volName, v.release(), 100, true);
+			SearchMan.add(volName + "_vol", v.release(), 100, true);
 		}
 		found = true;
 	}
 
 	Common::FSNode fullPath(ConfMan.get("path") + "/data/" + path);
 	if (fullPath.isDirectory()) {
-		SearchMan.addDirectory(volName, fullPath, 100, 1, true);
+		SearchMan.addDirectory(volName + "_dir", fullPath, 101, 3, false);
 		found = true;
 	}
 
@@ -148,8 +148,10 @@ void KQ8Engine::loadVolume(const Common::String& volName, const Common::String& 
 }
 
 void KQ8Engine::unloadVolume(const Common::String& volName) {
-	if (SearchMan.hasArchive(volName))
-		SearchMan.remove(volName);
+	if (SearchMan.hasArchive(volName + "_vol"))
+		SearchMan.remove(volName + "_vol");
+	if (SearchMan.hasArchive(volName + "_dir"))
+		SearchMan.remove(volName + "_dir");
 }
 
 } // end of namespace KQ8
