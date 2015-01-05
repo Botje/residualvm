@@ -56,6 +56,16 @@ void setcat(const Args& args) {
 	g_env[var] = val;
 }
 
+void echo(const Args& args) {
+	Common::String str;
+	foreach(const Common::String& tok, args) {
+		if (&tok != &args[0])
+			str += " ";
+		str += tok;
+	}
+	warning("%s", str.c_str());
+}
+
 void loadVolume(const Args& args) {
 	const Common::String& volName = args[0];
 	const Common::String& path = args[1];
@@ -80,6 +90,7 @@ void set(const Args& args) {
 }
 
 bool registerPrimitives() {
+	g_primitives["echo"] = &echo;
 	g_primitives["loadVolume"] = &loadVolume;
 	g_primitives["deleteObject"] = &deleteObject;
 	g_primitives["setcat"] = &setcat;
