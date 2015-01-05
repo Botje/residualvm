@@ -34,6 +34,16 @@ typedef void (*Command)(const Args& args);
 static Common::HashMap<Common::String, Command> g_primitives;
 Common::HashMap<Common::String, Common::String> g_env;
 
+static Common::String join(const Args& args, const Common::String& sep = " ") {
+	Common::String ret;
+	foreach(const Common::String& tok, args) {
+		if (&tok != &args[0])
+			ret += sep;
+		ret += tok;
+	}
+	return ret;
+}
+
 static Common::String resolve(const Args& args, const Common::String& token) {
 	const Common::String rest(token.begin()+1, token.end());
 	if (token[0] != '$')
@@ -57,12 +67,7 @@ void setcat(const Args& args) {
 }
 
 void echo(const Args& args) {
-	Common::String str;
-	foreach(const Common::String& tok, args) {
-		if (&tok != &args[0])
-			str += " ";
-		str += tok;
-	}
+	const Common::String str = join(args);
 	warning("%s", str.c_str());
 }
 
@@ -111,12 +116,7 @@ void SimpleStatement::execute(const Args& args) {
 		actual.push_back(resolve(args,tok));
 	}
 
-	Common::String line;
-	foreach(const Common::String& tok, actual) {
-		if (&tok != &actual[0])
-			line += " ";
-		line += tok;
-	}
+	Common::String line = join(actual);
 	debug("%s:%03d: %s", g_scriptStack.top()->getName().c_str(), _lineNumber, line.c_str());
 
 	static bool registered = registerPrimitives();
@@ -151,6 +151,8 @@ void IfStatement::execute(const Args& args) {
 	foreach (const Common::String &tok, _tokens) {
 		actual.push_back(resolve(args,tok));
 	}
+	Common::String line = join(actual);
+	debug("%s:%03d: if %s", g_scriptStack.top()->getName().c_str(), _lineNumber, line.c_str());
 	assert(actual[0] == "test");
 	assert(actual[2] == "==");
 	// FIXME: other conditions not yet handled.
