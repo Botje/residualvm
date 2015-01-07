@@ -42,6 +42,7 @@ public:
 	PBMPDecoder();
 	~PBMPDecoder();
 
+	bool loadPalette(byte *palette);
 	bool loadStream(Common::SeekableReadStream &stream);
 	void destroy();
 	const Graphics::Surface *getSurface() const { return _outputSurface; }

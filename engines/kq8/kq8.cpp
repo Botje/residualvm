@@ -70,6 +70,22 @@ bool KQ8Engine::hasFeature(EngineFeature f) const {
 	return false;
 }
 
+byte *loadPalette(const Common::String &fileName) {
+	Common::SeekableReadStream *pal = SearchMan.createReadStreamForMember(fileName);
+	if (!pal)
+		error("Could not load palette '%s'", fileName.c_str());
+
+	pal->seek(0x1c);
+	byte *palette = new byte[1024];
+	pal->read(palette, 1024);
+	for (int z = 0; z < 1024; z += 4) {
+		palette[z+3] = 0xFF; // Set alpha channel
+	}
+
+	delete pal;
+	return palette;
+}
+
 Common::Error KQ8Engine::run() {
 	_rnd = new Common::RandomSource("kq8");
 

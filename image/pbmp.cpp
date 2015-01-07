@@ -44,10 +44,13 @@ void PBMPDecoder::destroy() {
 		delete _outputSurface;
 		_outputSurface = 0;
 	}
-	delete[] _palette;
-	_palette = NULL;
 }
 
+bool PBMPDecoder::loadPalette(byte *palette) {
+	_paletteColorCount = 256;
+	_palette = palette;
+	return true;
+}
 
 bool PBMPDecoder::loadStream(Common::SeekableReadStream &stream) {
 	destroy();
@@ -56,14 +59,6 @@ bool PBMPDecoder::loadStream(Common::SeekableReadStream &stream) {
 	if (_stream->readUint32BE() != MKTAG('P', 'B', 'M', 'P')) {
 		delete _stream;
 		return false;
-	}
-
-	_paletteColorCount = 256;
-	_palette = new byte[_paletteColorCount * 3];
-	for (int i = 0; i < _paletteColorCount; i++) {
-		_palette[(i * 3)] = i;
-		_palette[(i * 3) + 1] = i;
-		_palette[(i * 3) + 2] = i;
 	}
 
 	_stream->readUint32LE();
@@ -84,10 +79,14 @@ bool PBMPDecoder::loadStream(Common::SeekableReadStream &stream) {
 	assert(size == (width * height));
 
 	_outputSurface = new Graphics::Surface();
-	_outputSurface->create(width, height, Graphics::PixelFormat::createFormatCLUT8());
+	_outputSurface->create(width, height, Graphics::PixelFormat::PixelFormat(4, 8, 8, 8, 0, 16, 8, 0, 0));
 
-	_stream->read(_outputSurface->getPixels(), size);
-
+	uint32 *buf = (uint32 *) _outputSurface->getPixels();
+	while (size-- > 0) {
+		byte b = _stream->readByte();
+		uint32 color = ((uint32 *)_palette)[b];
+		*buf++ = color;
+	}
 
 	// We no longer need the file stream, thus close it here
 	_stream = 0;
