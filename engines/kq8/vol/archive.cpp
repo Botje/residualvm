@@ -103,6 +103,8 @@ int VolArchive::listMembers(Common::ArchiveMemberList &list) const {
 }
 
 const Common::ArchiveMemberPtr VolArchive::getMember(const Common::String &name) const {
+	if (!hasFile(name))
+		return Common::ArchiveMemberPtr();
 	return _entries[name];
 }
 
@@ -120,6 +122,9 @@ static int blastWrite(void *how, unsigned char *buf, unsigned len) {
 }
 
 Common::SeekableReadStream * VolArchive::createReadStreamForMember(const Common::String &name) const {
+	if (!hasFile(name))
+		return nullptr;
+
 	const EntryPtr &e = _entries[name];
 	_stream->seek(e->_pos);
 
