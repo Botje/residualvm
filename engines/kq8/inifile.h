@@ -34,15 +34,20 @@ namespace KQ8 {
 class IniFile {
 	public:
 	typedef Common::StringMap Section;
+	typedef Common::HashMap<Common::String, Section, Common::IgnoreCase_Hash, Common::IgnoreCase_EqualTo> SectionsMap;
 
 	IniFile(Common::SeekableReadStream *s);
+
+	const SectionsMap &getSections() const {
+		return _sections;
+	}
 
 	const Section &getSection(const Common::String &str) const {
 		return _sections[str];
 	}
 
 	private:
-	Common::HashMap<Common::String, Section, Common::IgnoreCase_Hash, Common::IgnoreCase_EqualTo> _sections;
+	SectionsMap _sections;
 };
 
 } // end of namespace KQ8

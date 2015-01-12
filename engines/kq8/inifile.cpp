@@ -48,9 +48,13 @@ IniFile::IniFile(Common::SeekableReadStream *s) {
 				if (*it == '=')  {
 					const Common::String name(line.begin(), it);
 
-					do { ++it; } while (it != line.end() && Common::isSpace(*it));
+					++it;
+					while (it != line.end() && Common::isSpace(*it)) {
+						++it;
+					}
 					const Common::String value(it, line.end());
 					(*currentSection)[name] = value;
+					break;
 				}
 			}
 		}
