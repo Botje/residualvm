@@ -37,7 +37,6 @@ class BlockStatement;
 typedef Common::SharedPtr<Statement> StatementPtr;
 typedef Common::SharedPtr<BlockStatement> BlockStatementPtr;
 typedef Common::Array<Common::String> Args;
-extern Common::HashMap<Common::String, Common::String> g_env;
 }
 
 #include "engines/kq8/script.h"

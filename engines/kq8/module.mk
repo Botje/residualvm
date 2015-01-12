@@ -4,6 +4,7 @@ MODULE_OBJS := \
 	detection.o \
 	inifile.o \
 	kq8.o \
+	primitives.o \
 	script.o \
 	statements.o \
 	vol/archive.o \

@@ -26,6 +26,8 @@
 #include "engines/advancedDetector.h"
 #include "engines/engine.h"
 
+#include "engines/kq8/primitives.h"
+
 #include "common/system.h"
 #include "common/random.h"
 
@@ -62,6 +64,8 @@ public:
 	Common::Platform getPlatform() const;
 	Common::Language getDefaultLanguage() const;
 
+	Primitives &getPrimitives() { return _primitives; }
+
 	virtual void settingsInitDefaults();
 	void loadVolume(const Common::String& volName, const Common::String& path);
 	void unloadVolume(const Common::String& volName);
@@ -73,6 +77,7 @@ private:
 	void processInput();
 
 	bool _quitting;
+	Primitives _primitives;
 };
 
 extern KQ8Engine *g_kq8;

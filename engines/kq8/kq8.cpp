@@ -97,11 +97,6 @@ Common::Error KQ8Engine::run() {
 	args.push_back("Init");
 	s.execute(args);
 
-	g_env["KQWorld::Name"] = "Daventry";
-	g_env["KQWorld::Parent"] = "Daventry";
-	g_env["KQGame::BitDepth"] = "8";
-	g_env["KQGame::Language"] = "English";
-	g_env["KQGame::runOptimal"] = "yes";
 	args.back() = "NewWorld";
 	s.execute(args);
 
