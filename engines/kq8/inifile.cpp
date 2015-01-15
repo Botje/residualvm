@@ -41,8 +41,9 @@ IniFile::IniFile(Common::SeekableReadStream *s) {
 			continue;
 
 		if (line[0] == '[') {
-			Common::String section(line.begin()+1, line.end()-1);
-			currentSection = &_sections[section];
+			Common::String name(line.begin()+1, line.end()-1);
+			_sections.push_back(Section());
+			currentSection = &_sections.back();
 		} else {
 			for (Common::String::const_iterator it = line.begin(); it != line.end(); ++it) {
 				if (*it == '=')  {
@@ -53,7 +54,7 @@ IniFile::IniFile(Common::SeekableReadStream *s) {
 						++it;
 					}
 					const Common::String value(it, line.end());
-					(*currentSection)[name] = value;
+					currentSection->entries[name] = value;
 					break;
 				}
 			}

@@ -24,6 +24,8 @@
 #define KQ8_INIFILE_H
 
 #include "common/scummsys.h"
+#include "common/array.h"
+#include "common/foreach.h"
 #include "common/hashmap.h"
 #include "common/str.h"
 #include "common/hash-str.h"
@@ -33,21 +35,28 @@ namespace KQ8 {
 
 class IniFile {
 	public:
-	typedef Common::StringMap Section;
-	typedef Common::HashMap<Common::String, Section, Common::IgnoreCase_Hash, Common::IgnoreCase_EqualTo> SectionsMap;
+	struct Section {
+		Common::String name;
+	 	Common::StringMap entries;
+	};
+	typedef Common::Array<Section> Sections;
 
 	IniFile(Common::SeekableReadStream *s);
 
-	const SectionsMap &getSections() const {
+	const Common::Array<Section> &getSections() const {
 		return _sections;
 	}
 
 	const Section &getSection(const Common::String &str) const {
-		return _sections[str];
+		foreach (const Section &s, _sections) {
+			if (s.name == str)
+				return s;
+		}
+		error("Attempted to get nonexistent section '%s'", str.c_str());
 	}
 
 	private:
-	SectionsMap _sections;
+	Sections _sections;
 };
 
 } // end of namespace KQ8
