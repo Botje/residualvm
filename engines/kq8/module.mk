@@ -5,6 +5,7 @@ MODULE_OBJS := \
 	inifile.o \
 	kq8.o \
 	primitives.o \
+	registry.o \
 	script.o \
 	statements.o \
 	vol/archive.o \

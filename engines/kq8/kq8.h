@@ -27,6 +27,7 @@
 #include "engines/engine.h"
 
 #include "engines/kq8/primitives.h"
+#include "engines/kq8/registry.h"
 
 #include "common/system.h"
 #include "common/random.h"
@@ -65,6 +66,7 @@ public:
 	Common::Language getDefaultLanguage() const;
 
 	Primitives &getPrimitives() { return _primitives; }
+	Registry &getRegistry() { return _registry; }
 
 	virtual void settingsInitDefaults();
 	void loadVolume(const Common::String& volName, const Common::String& path);
@@ -78,6 +80,7 @@ private:
 
 	bool _quitting;
 	Primitives _primitives;
+	Registry _registry;
 };
 
 extern KQ8Engine *g_kq8;
