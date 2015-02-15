@@ -1,6 +1,7 @@
 MODULE := engines/kq8
 
 MODULE_OBJS := \
+	classes/kqinventoryitemtypelist.o \
 	detection.o \
 	inifile.o \
 	kq8.o \
