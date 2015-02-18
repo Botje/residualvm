@@ -23,14 +23,20 @@
 #ifndef KQ8_ENGINE_H
 #define KQ8_ENGINE_H
 
+#include <typeinfo>
+
 #include "engines/advancedDetector.h"
 #include "engines/engine.h"
 
 #include "engines/kq8/primitives.h"
 #include "engines/kq8/registry.h"
 
-#include "common/system.h"
+#include "common/hashmap.h"
+#include "common/hash-str.h"
+#include "common/noncopyable.h"
+#include "common/ptr.h"
 #include "common/random.h"
+#include "common/system.h"
 
 namespace Graphics {
 struct Surface;
@@ -48,7 +54,7 @@ struct KQ8GameDescription {
 	ADGameDescription desc;
 };
 
-class KQ8Engine : public Engine {
+class KQ8Engine : public Engine, private Common::NonCopyable {
 
 protected:
 	// Engine APIs
@@ -71,6 +77,22 @@ public:
 	virtual void settingsInitDefaults();
 	void loadVolume(const Common::String& volName, const Common::String& path);
 	void unloadVolume(const Common::String& volName);
+
+	template <class K>
+	K& get() {
+		return *static_cast<K*>(_singletons[typeid(K).name()].get());
+	}
+
+	template <class K>
+	void set(Common::SharedPtr<K> ptr) {
+		_singletons[typeid(K).name()] = ptr;
+	}
+
+	template <class K>
+	void erase() {
+		_singletons.erase(typeid(K).name());
+	}
+
 private:
 	OSystem *_system;
 	const KQ8GameDescription *_gameDescription;
@@ -81,6 +103,7 @@ private:
 	bool _quitting;
 	Primitives _primitives;
 	Registry _registry;
+	Common::HashMap<Common::String, Common::SharedPtr<KQObject> > _singletons;
 };
 
 extern KQ8Engine *g_kq8;
