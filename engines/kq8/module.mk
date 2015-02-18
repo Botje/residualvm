@@ -1,7 +1,6 @@
 MODULE := engines/kq8
 
 MODULE_OBJS := \
-	classes/kqinventoryitemtypelist.o \
 	detection.o \
 	inifile.o \
 	kq8.o \
@@ -11,6 +10,8 @@ MODULE_OBJS := \
 	statements.o \
 	vol/archive.o \
 	vol/blast.o
+
+include $(srcdir)/engines/kq8/classes/module.mk
 
 # This module can be built as a plugin
 ifeq ($(ENABLE_KQ8), DYNAMIC_PLUGIN)
