@@ -24,7 +24,7 @@
 
 namespace KQ8 {
 
-#define REGISTER(klass) extern Registry::Constructor create ## klass;
+#define REGISTER(klass) extern KQObject *create ## klass(const IniFile&);
 #include "engines/kq8/registered.h"
 #undef REGISTER
 
