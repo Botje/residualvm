@@ -23,6 +23,7 @@
 #include "common/foreach.h"
 #include "common/tokenizer.h"
 
+#include "engines/kq8/kq8.h"
 #include "engines/kq8/classes/kqinventoryitemtypelist.h"
 
 namespace KQ8 {
@@ -68,6 +69,7 @@ KQInventoryItemTypeList::KQInventoryItemTypeList(const IniFile& init)
 
 				_items[vals["IDName"]] = vals;
 			}
+	g_kq8->set<KQInventoryItemTypeList>(this);
 }
 
 KQObject *createKQInventoryItemTypeList(const IniFile& ini) {

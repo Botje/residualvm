@@ -31,13 +31,15 @@
 
 namespace KQ8 {
 
-	class KQObject;
+class KQObject;
 
 class Registry {
 	public:
 	typedef KQObject *(* Constructor)(const IniFile& ini);
 
 	Registry();
+	bool supportsClass(const Common::String &classType) const;
+	KQObject *construct(const Common::String &classType, const IniFile& ini) const;
 	
 	private:
 	Common::HashMap<Common::String, Constructor> _constructors;

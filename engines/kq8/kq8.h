@@ -89,6 +89,11 @@ public:
 	}
 
 	template <class K>
+	void set(K* ptr) {
+		_singletons[typeid(K).name()] = Common::SharedPtr<K>(ptr);
+	}
+
+	template <class K>
 	void erase() {
 		_singletons.erase(typeid(K).name());
 	}

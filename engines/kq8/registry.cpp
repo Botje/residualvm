@@ -34,4 +34,12 @@ Registry::Registry() {
 #undef REGISTER
 }
 
+bool Registry::supportsClass(const Common::String &classType) const {
+	return _constructors.contains(classType);
+}
+
+KQObject *Registry::construct(const Common::String &classType, const IniFile& ini) const {
+	return _constructors[classType](ini);
+}
+
 } // end of namespace KQ8

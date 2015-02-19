@@ -23,3 +23,4 @@
 #error Define the REGISTER macro before including registered.h
 #endif
 
+REGISTER(KQInventoryItemTypeList)
