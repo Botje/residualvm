@@ -72,12 +72,13 @@ Common::String Primitives::join(const Args& args, const Common::String& sep) {
 		error("KQ file %s not found!", fname.c_str());
 
 	IniFile i(ptr->createReadStream());
-	const Common::String classType = i.getSections()[0].entries["classType"];
-	Registry &r = g_kq8->getRegistry();
+	const Common::String classType = i[0]["classType"];
+	const Registry &r = g_kq8->getRegistry();
 	if (!r.supportsClass(classType)) {
 		warning("Skipping unsupported class '%s'", classType.c_str());
 		return;
 	}
+	KQObject *o = r.construct(classType, i);
 }
 
  void Primitives::loadVolume(const Args& args) {

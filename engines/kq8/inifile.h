@@ -55,6 +55,10 @@ class IniFile {
 		error("Attempted to get nonexistent section '%s'", str.c_str());
 	}
 
+	const Common::StringMap& operator[] (unsigned int i) const {
+		return _sections[i].entries;
+	}
+
 	private:
 	Sections _sections;
 };
