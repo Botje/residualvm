@@ -19,12 +19,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
-#ifndef REGISTER
-#error Define the REGISTER macro before including registered.h
-#endif
 
-REGISTER(KQInventoryItemTypeList)
-REGISTER(KQTerrain)
-REGISTER(KQCamMover)
-REGISTER(KQWorldInventory)
-REGISTER(KQObject)
+#include "engines/kq8/kq8.h"
+#include "engines/kq8/classes/kqworldinventory.h"
+
+namespace KQ8 {
+
+KQWorldInventory::KQWorldInventory(const IniFile& ini)
+		: KQObject() {
+	g_kq8->set(Common::SharedPtr<KQWorldInventory>(this));
+}
+
+KQObject *createKQWorldInventory(const IniFile& ini) {
+	return new KQWorldInventory(ini);
+}
+
+} // end of namespace KQ8
