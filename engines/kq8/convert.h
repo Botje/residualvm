@@ -19,10 +19,31 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
-#ifndef REGISTER
-#error Define the REGISTER macro before including registered.h
+
+namespace KQ8 {
+
+#ifndef KQ8_CONVERT_H
+#define KQ8_CONVERT_H
+
+template <class T>
+T convert(const Common::String &str);
+
+template <>
+inline uint32 convert(const Common::String &str) {
+	uint32 ret;
+	int num_converted = sscanf(str.c_str(), "%u", &ret);
+	assert(num_converted == 1);
+	return ret;
+}
+
+template <>
+inline float convert(const Common::String &str) {
+	float ret;
+	int num_converted = sscanf(str.c_str(), "%f", &ret);
+	assert(num_converted == 1);
+	return ret;
+}
+
 #endif
 
-REGISTER(KQInventoryItemTypeList)
-REGISTER(KQTerrain)
-REGISTER(KQCamMover)
+} // end of namespace KQ8

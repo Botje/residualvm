@@ -19,10 +19,20 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
-#ifndef REGISTER
-#error Define the REGISTER macro before including registered.h
-#endif
 
-REGISTER(KQInventoryItemTypeList)
-REGISTER(KQTerrain)
-REGISTER(KQCamMover)
+#ifndef ENGINES_KQ8_CLASSES_KQCAMMOVER
+#define ENGINES_KQ8_CLASSES_KQCAMMOVER
+
+#include "engines/kq8/inifile.h"
+#include "engines/kq8/classes/kqobject.h"
+
+namespace KQ8 {
+
+class KQCamMover : public KQObject {
+	public:
+	KQCamMover(const IniFile& init);
+};
+
+} // end of namespace KQ8
+
+#endif
