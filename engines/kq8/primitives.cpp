@@ -27,6 +27,20 @@
 
 namespace KQ8 {
 
+static uint32 get_uint32(const Common::String& s) {
+	uint32 ret;
+	if (0 == sscanf(s.c_str(), "%u", &ret))
+		error("Could not convert %s to uint32", s.c_str());
+	return ret;
+}
+
+static float get_float(const Common::String& s) {
+	float ret;
+	if (0 == sscanf(s.c_str(), "%f", &ret))
+		error("Could not convert %s to float", s.c_str());
+	return ret;
+}
+
 Common::String Primitives::join(const Args& args, const Common::String& sep) {
 	Common::String ret;
 	foreach(const Common::String& tok, args) {
