@@ -26,3 +26,4 @@
 REGISTER(KQInventoryItemTypeList)
 REGISTER(KQTerrain)
 REGISTER(KQCamMover)
+REGISTER(KQObject)

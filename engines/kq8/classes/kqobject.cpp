@@ -20,25 +20,21 @@
  *
  */
 
-#ifndef ENGINES_KQ8_CLASSES_KQOBJECT
-#define ENGINES_KQ8_CLASSES_KQOBJECT
-
-#include "common/str.h"
-#include "math/vector3d.h"
-
 #include "engines/kq8/inifile.h"
+#include "engines/kq8/classes/kqobject.h"
 
 namespace KQ8 {
 
-class KQObject {
-	public:
-	KQObject();
-	KQObject(const IniFile& ini);
-	Math::Vector3d _pos;
-	Math::Vector3d _rot;
-	Common::String _name;
-};
+KQObject::KQObject()
+	: _pos(0,0,0), _rot(0,0,0)
+{
+}
+
+KQObject::KQObject(const IniFile& ini) {
+}
+
+KQObject *createKQObject(const IniFile& ini) {
+	return new KQObject(ini);
+}
 
 } // end of namespace KQ8
-
-#endif
