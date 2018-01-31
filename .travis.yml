@@ -35,17 +35,13 @@ branches:
    - fix-osx
 
 compiler:
-  - gcc
   - clang
 
 os:
-  - linux
   - osx
 
 dist: trusty
 
 script:
   - ./configure --enable-all-engines
-  - make -j 2
-  - make test
-  - make devtools
+  - make -j 2 bundle
